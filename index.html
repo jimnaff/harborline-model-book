@@ -1,0 +1,380 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Harborline Model Book</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
+<style>
+/* Layout: fixed left index on wide screens, a sticky top strip on phones; one long document body with the model map at the top. */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --fg:#17202b; --muted:#5b6673; --line:#d9dee5;
+  --accent:#0f4c81; --accent-ink:#ffffff; --teal:#1b7f79; --amber:#b5651d; --soft:#e8eef5;
+  --rule-bg:#0f1721; --rule-fg:#d7dee8; --rule-key:#8fd3ff; --rule-cmt:#7f8c9a;
+  --display:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1419; --panel:#161c23; --fg:#e4e9ef; --muted:#97a3b0; --line:#2a333d;
+  --accent:#6fb3e8; --accent-ink:#0b1a28; --teal:#5fc4bd; --amber:#e3a062; --soft:#1d2733;
+  --rule-bg:#0a0f14; --rule-fg:#cfd7e0; --rule-key:#8fd3ff; --rule-cmt:#6c7a88; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1419; --panel:#161c23; --fg:#e4e9ef; --muted:#97a3b0; --line:#2a333d;
+  --accent:#6fb3e8; --accent-ink:#0b1a28; --teal:#5fc4bd; --amber:#e3a062; --soft:#1d2733;
+  --rule-bg:#0a0f14; --rule-fg:#cfd7e0; --rule-key:#8fd3ff; --rule-cmt:#6c7a88; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55;margin:0}
+a{color:var(--accent)}
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100%}
+nav{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:calc(100vh - env(safe-area-inset-top,0px));overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:12px}
+nav .brand{font-family:var(--display);font-size:20px;font-weight:600;line-height:1.1}
+nav .meta{font-size:12px;color:var(--muted);margin-top:4px}
+nav .search{margin:14px 0 10px;width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);font:inherit;font-size:13px}
+nav h4{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px;font-weight:600}
+nav ul{list-style:none;margin:0;padding:0}
+nav li a{display:block;padding:3px 6px;border-radius:3px;font-size:13px;text-decoration:none;color:var(--fg)}
+nav li a:hover,nav li a:focus-visible{background:var(--soft);outline:none}
+nav li a.cube{font-family:var(--mono);font-size:12.5px}
+main{padding-block:28px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1040px}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  main{min-width:0;overflow-x:hidden}
+  nav{position:sticky;height:auto;max-height:none;border-right:0;border-bottom:1px solid var(--line);padding-block:10px;padding-right:max(16px,env(safe-area-inset-right,0px));z-index:5}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+  nav .search{display:none}
+  nav h4{display:none}
+  nav ul{display:flex;flex-wrap:wrap;gap:2px 4px}
+  nav li a{padding:3px 7px;font-size:12px;border:1px solid var(--line)}
+  nav li a.cube{font-size:11.5px}
+}
+header.doc h1{font-family:var(--display);font-size:38px;font-weight:600;margin:0 0 4px;line-height:1.1;text-wrap:balance}
+header.doc p{margin:0;color:var(--muted);max-width:62ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px 20px;margin:16px 0 0;font-size:13px}
+.facts span b{font-weight:600;color:var(--fg)}
+.facts span{color:var(--muted)}
+section{margin-top:44px}
+h2{font-family:var(--display);font-size:26px;font-weight:600;margin:0 0 6px;text-wrap:balance}
+h3{font-size:16px;font-weight:600;margin:24px 0 6px}
+p{max-width:68ch}
+.lede{color:var(--muted);margin:0 0 14px}
+code,.el{font-family:var(--mono);font-size:.92em}
+.el{background:var(--soft);padding:1px 5px;border-radius:3px;white-space:nowrap}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.mono,th.mono{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.scroll{overflow-x:auto;max-width:100%}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+
+/* Map */
+.map{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;margin-top:14px}
+.map .bar{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.map .key{display:inline-flex;align-items:center;gap:6px}
+.map .key i{display:inline-block;width:22px;height:0;border-top:2px solid var(--accent)}
+.map .key i.feed{border-top-style:dashed;border-top-color:var(--teal)}
+.map .key i.load{border-top-color:var(--amber)}
+.map svg{width:100%;height:auto;display:block;font-family:var(--mono)}
+.map .node rect{fill:var(--soft);stroke:var(--line);stroke-width:1.2;cursor:pointer;transition:stroke .15s}
+.map .node text{fill:var(--fg);font-size:12px;pointer-events:none}
+.map .node text.dims{fill:var(--muted);font-size:9.5px}
+.map .node.hot rect{stroke:var(--accent);stroke-width:2}
+.map .node.dim rect{opacity:.35}
+.map .node.dim text{opacity:.35}
+.map .proc rect{fill:var(--panel);stroke:var(--amber);stroke-dasharray:3 2}
+.map .edge{fill:none;stroke:var(--accent);stroke-width:1.5;opacity:.7}
+.map .edge.feed{stroke:var(--teal);stroke-dasharray:4 3}
+.map .edge.load{stroke:var(--amber)}
+.map .edge.dim{opacity:.12}
+.map .edge.hot{opacity:1;stroke-width:2.5}
+.map .lbl{font-size:9.5px;fill:var(--muted)}
+.map .hint{font-size:12.5px;color:var(--muted);margin:10px 0 0;min-height:1.4em}
+.map .hint b{color:var(--fg)}
+
+/* Cube cards */
+main .cube{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-top:14px}
+main .cube .head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+main .cube .head h3{margin:0;font-family:var(--mono);font-size:17px}
+main .cube .tag{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+main .cube .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 24px;margin-top:10px;font-size:13.5px}
+main .cube .grid div span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+main .cube .io{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+main .cube .io a{font-family:var(--mono);font-size:12px;text-decoration:none;color:var(--accent);background:var(--soft);padding:1px 6px;border-radius:3px}
+main .cube .io a.feed{color:var(--teal)}
+main .cube .io em{color:var(--muted);font-style:normal;font-size:12.5px}
+
+/* Rules */
+pre.rule{background:var(--rule-bg);color:var(--rule-fg);font-family:var(--mono);font-size:12.5px;line-height:1.5;padding:14px 16px;border-radius:6px;overflow-x:auto;margin:8px 0 0;max-width:100%}
+pre.rule .k{color:var(--rule-key)}
+pre.rule .c{color:var(--rule-cmt);font-style:italic}
+details{margin-top:10px}
+summary{cursor:pointer;font-weight:500;color:var(--accent)}
+.pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:middle}
+.pill.ok{color:var(--teal);border-color:var(--teal)}
+.pill.warn{color:var(--amber);border-color:var(--amber)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:10px}
+.flow .step{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:13.5px}
+.flow .step b{display:block;font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--accent)}
+.foot{margin-top:50px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="shell">
+<nav aria-label="Contents">
+  <div class="brand">Harborline Brands</div>
+  <div class="meta">Model book · TM1 11.8 · checked 2026-10-25</div>
+  <input class="search" id="q" type="search" placeholder="Find a cube, rule, process…" aria-label="Find in this book">
+  <h4>Start here</h4>
+  <ul><li><a href="#tour">Model tour</a></li><li><a href="#map">Model map</a></li><li><a href="#dims">Dimensions</a></li></ul>
+  <h4>Cubes</h4>
+  <ul id="nav-cubes"></ul>
+  <h4>Logic &amp; jobs</h4>
+  <ul><li><a href="#rules">Rules &amp; feeders</a></li><li><a href="#processes">Processes</a></li><li><a href="#chores">Chores</a></li><li><a href="#security">Security</a></li></ul>
+</nav>
+
+<main>
+<header class="doc">
+  <h1>Harborline Brands</h1>
+  <p>FP&amp;A planning model for a mid-size consumer goods company: monthly close, annual budget, rolling forecast, reported in local currency and USD. Everything below was read from the live server.</p>
+  <div class="facts">
+    <span><b>9</b> cubes</span><span><b>19</b> dimensions</span><span><b>8</b> rule cubes</span><span><b>55</b> rule statements</span><span><b>32</b> feeders</span><span><b>33</b> processes</span><span><b>1</b> chore</span>
+  </div>
+</header>
+
+<section id="tour">
+  <h2>Model tour</h2>
+  <p class="lede">For an analyst seeing this model for the first time.</p>
+  <p>Harborline sells 40 SKUs under 12 brands in 7 countries through four channels. Finance loads <b>units sold</b> into the <a href="#cube-sales">Sales</a> cube and everything else about revenue is calculated: price comes from an annual <a href="#cube-price-list">Price List</a>, cost from <a href="#cube-product-cost">Product Cost</a>, and discounts, returns and freight from rates in <a href="#cube-assumptions">Assumptions</a>.</p>
+  <p>Payroll is driven, not loaded. <a href="#cube-headcount">Headcount</a> holds FTE and salary by cost center; benefits and bonus rates come from <a href="#cube-regional-assumptions">Regional Assumptions</a> by country. Other operating expenses are loaded from the GL straight into the <a href="#cube-pl">P&amp;L</a>.</p>
+  <p>The P&amp;L pulls it together per cost center: revenue lines from Sales for the cost center's country, personnel lines from Headcount, a sales commission for Sales-function cost centers, and a shared-services allocation spread by headcount share. Local currency is translated to USD with <a href="#cube-fx-rates">FX Rates</a>. The <a href="#cube-control">Control</a> cube holds the current month, the forecast start, and the allocation switch.</p>
+  <p>Months through 202608 are closed. 202609 is the open month. Forecast equals Actual for closed months and uses Budget plus an uplift for open months.</p>
+</section>
+
+<section id="map">
+  <h2>Model map</h2>
+  <p class="lede">Cube-to-cube data flow, read from the rule and feeder text. Solid arrows are <code>DB()</code> lookups, dashed arrows are feeders, orange arrows are TI loads. Click a cube to jump to it.</p>
+  <div class="map">
+    <div class="bar"><span class="key"><i></i>rule lookup</span><span class="key"><i class="feed"></i>feeder</span><span class="key"><i class="load"></i>process load</span><span>Hover a cube to isolate its links.</span></div>
+    <div id="svgwrap"></div>
+    <p class="hint" id="hint">Nine cubes, 9 cross-cube rule links, 3 cross-cube feeder links.</p>
+  </div>
+</section>
+
+<section id="dims">
+  <h2>Dimensions</h2>
+  <p class="lede">Nineteen in all: eleven business dimensions and eight measure dimensions.</p>
+  <div class="scroll"><table>
+    <tr><th>Dimension</th><th class="num">Elements</th><th>Hierarchies</th><th>Attributes used by rules</th></tr>
+    <tr><td class="mono">Version</td><td class="num">6</td><td>1</td><td>Version Type, Base Version</td></tr>
+    <tr><td class="mono">Time</td><td class="num">52</td><td>1</td><td>Status, Year, Prior Year Month, Next Year Month</td></tr>
+    <tr><td class="mono">Year</td><td class="num">3</td><td>1</td><td>—</td></tr>
+    <tr><td class="mono">Region</td><td class="num">11</td><td>1</td><td>Currency, Revenue Cost Center</td></tr>
+    <tr><td class="mono">Channel</td><td class="num">7</td><td>1</td><td>—</td></tr>
+    <tr><td class="mono">Product</td><td class="num">57</td><td>1</td><td>Active, Predecessor SKU, Successor SKU</td></tr>
+    <tr><td class="mono">Cost Center</td><td class="num">26</td><td>2 · <span class="el">Legal Entity</span></td><td>Function, Country, Currency, Receives Allocation, Commissionable, Revenue Country</td></tr>
+    <tr><td class="mono">Account</td><td class="num">38</td><td>1</td><td>Sign, Account Type, Source</td></tr>
+    <tr><td class="mono">Reporting Currency</td><td class="num">2</td><td>1</td><td>—</td></tr>
+    <tr><td class="mono">Currency</td><td class="num">6</td><td>1</td><td>—</td></tr>
+    <tr><td class="mono">Job Band</td><td class="num">6</td><td>1</td><td>Band Code</td></tr>
+    <tr><td class="mono" colspan="4" style="color:var(--muted)">+ Sales Measures (18) · Price List Measures (1) · Product Cost Measures (2) · Assumption Measures (4) · Regional Assumption Measures (3) · Headcount Measures (7) · FX Measures (2) · Control Measures (6)</td></tr>
+  </table></div>
+</section>
+
+<section id="cubes">
+  <h2>Cubes</h2>
+  <p class="lede">What is stored, what is calculated, and which cubes each one talks to.</p>
+  <div id="cube-cards"></div>
+</section>
+
+<section id="rules">
+  <h2>Rules &amp; feeders</h2>
+  <p class="lede">Eight cubes carry rules. Every rule cube has <code>SKIPCHECK</code> and a <code>FEEDERS</code> section. Every cross-cube rule link in the map has a matching feeder.</p>
+  <div class="scroll"><table>
+    <tr><th>Cube</th><th class="num">Rule statements</th><th class="num">Feeder statements</th><th>Cross-cube lookups</th></tr>
+    <tr><td class="mono">Sales</td><td class="num">17</td><td class="num">7</td><td>Price List, Product Cost, FX Rates, Assumptions, P&amp;L (feeder)</td></tr>
+    <tr><td class="mono">P&amp;L</td><td class="num">23</td><td class="num">8</td><td>Sales, Headcount, Regional Assumptions, FX Rates, Control (in a feeder condition)</td></tr>
+    <tr><td class="mono">Headcount</td><td class="num">8</td><td class="num">7</td><td>Regional Assumptions, P&amp;L (feeder)</td></tr>
+    <tr><td class="mono">Assumptions</td><td class="num">1</td><td class="num">2</td><td>—</td></tr>
+    <tr><td class="mono">Regional Assumptions</td><td class="num">1</td><td class="num">2</td><td>—</td></tr>
+    <tr><td class="mono">Price List</td><td class="num">2</td><td class="num">2</td><td>—</td></tr>
+    <tr><td class="mono">Product Cost</td><td class="num">2</td><td class="num">2</td><td>—</td></tr>
+    <tr><td class="mono">FX Rates</td><td class="num">1</td><td class="num">2</td><td>—</td></tr>
+  </table></div>
+
+  <h3>Sales — forecast units, in plain English</h3>
+  <p>Closed months copy Actual. Open months take Budget units, add the uplift from Assumptions, and, for a SKU that replaced another, add the predecessor's budget. Inactive SKUs forecast zero.</p>
+<pre class="rule"><span class="c"># Rolling forecast: closed months = Actual; open months = Budget × uplift,
+# plus the predecessor's budgeted volume when this SKU replaced another one.</span>
+[<span class="k">'Forecast'</span>, <span class="k">'Units'</span>] = N:
+    IF(ATTRS('Time', !Time, 'Status') @= 'Closed', ['Actual', 'Units'],
+    IF(ATTRS('Product', !Product, 'Active') @= 'N', 0,
+       ['Budget', 'Units'] * (1 + DB(<span class="k">'Assumptions'</span>, 'Forecast', !Time, !Region, !Channel, 'Forecast Uplift %'))
+       + IF(ATTRS('Product', !Product, 'Predecessor SKU') @= '', 0,
+            DB(<span class="k">'Sales'</span>, 'Budget', !Time, !Region, !Channel, ATTRS('Product', !Product, 'Predecessor SKU'), 'Units'))));</pre>
+  <details><summary>Show the matching feeders</summary>
+<pre class="rule">[<span class="k">'Budget'</span>, <span class="k">'Units'</span>]   => ['Forecast', 'Units'], ['Actual vs Budget', 'Units'], ['Forecast vs Budget', 'Units'],
+                         DB(<span class="k">'Sales'</span>, 'Forecast', !Time, !Region, !Channel, ATTRS('Product', !Product, <span class="k">'Successor SKU'</span>), 'Units');
+<span class="c"># The rule reads Predecessor SKU; the feeder reads Successor SKU. The two attributes must stay in sync.</span></pre>
+  </details>
+
+  <h3>P&amp;L — shared-services allocation</h3>
+  <p>Pool cost centers push their allocable costs out. Each operating cost center takes the pool total in USD times its headcount share, converted back to its own currency.</p>
+<pre class="rule">[<span class="k">'Allocation In'</span>, 'Local']  = N: IF(ATTRS('Cost Center', !Cost Center, 'Receives Allocation') @= 'Y',
+    DB(<span class="k">'P&amp;L'</span>, !Version, !Time, 'Shared Services', 'Allocable Costs', 'USD')
+    * DB(<span class="k">'Headcount'</span>, !Version, !Time, !Cost Center, 'All Job Bands', 'Headcount Share')
+    \ DB(<span class="k">'FX Rates'</span>, !Version, !Time, ATTRS('Cost Center', !Cost Center, 'Currency'), 'Average Rate'), 0);</pre>
+  <details><summary>Show the matching feeder, and why it is flagged</summary>
+<pre class="rule">['Salaries', 'Local'] => DB(IF(ATTRS('Cost Center', !Cost Center, 'Function') @= 'Shared Services'
+                              &amp; DB(<span class="k">'Control'</span>, !Version, 'Allocations Enabled') = 1, 'P&amp;L', ''),
+                            !Version, !Time, 'Operating Cost Centers', 'Allocation In', 'Local');</pre>
+  <p>The feeder has a condition the rule does not: it checks <span class="el">Control / Allocations Enabled</span>. If that flag is 0 the rule still calculates at every leaf, but nothing is fed, so the consolidations show zero. Worth knowing before a close.</p>
+  </details>
+</section>
+
+<section id="processes">
+  <h2>Processes</h2>
+  <p class="lede">Thirty-three TurboIntegrator processes, named <code>Area.Name</code>. The load and system processes are listed; the security loaders and demo-setup processes are counted but not listed. Loads are restartable: each zeroes exactly the slice it reloads.</p>
+  <div class="scroll"><table id="proc-table">
+    <tr><th>Process</th><th>Does</th><th>Parameters</th><th>Writes to</th></tr>
+  </table></div>
+</section>
+
+<section id="chores">
+  <h2>Chores</h2>
+  <p class="lede">One chore, scheduled daily at 06:00, multiple commit. Currently inactive; loads are run by hand during the demo period.</p>
+  <h3>Daily Load</h3>
+  <div class="flow">
+    <div class="step"><b>1 · Load.All Dimensions</b>Structure and attributes for every dimension from csv/master</div>
+    <div class="step"><b>2 · Load.Sales Units</b>Actual, current month only, zero-out first</div>
+    <div class="step"><b>3 · Load.GL Actuals</b>Opex, D&amp;A, interest, tax for the current month</div>
+    <div class="step"><b>4 · Load.FX Rates</b>Average and closing rates, all versions</div>
+    <div class="step"><b>5 · Load.Headcount</b>Actual FTE and salary, current month</div>
+    <div class="step"><b>6 · Sys.Save Data</b>SaveDataAll, stamps Control / Last Daily Load</div>
+  </div>
+</section>
+
+<section id="security">
+  <h2>Security</h2>
+  <p class="lede">The business groups. Cell security on Sales and P&amp;L is rule-driven.</p>
+  <div class="scroll"><table>
+    <tr><th>Group</th><th>Can write</th><th>Restricted to</th><th>Cannot see</th></tr>
+    <tr><td class="mono">FP&amp;A</td><td>Sales, Assumptions, Regional Assumptions, P&amp;L, Control</td><td>—</td><td>Budget once locked</td></tr>
+    <tr><td class="mono">Sales NA / EU / APAC</td><td>Sales (Forecast Units, open months)</td><td>Own region, own cost centers</td><td>Personnel lines in P&amp;L</td></tr>
+    <tr><td class="mono">HR</td><td>Headcount, Regional Assumptions</td><td>—</td><td>Sales cube</td></tr>
+    <tr><td class="mono">Analyst RO</td><td>nothing</td><td>—</td><td>Headcount; personnel lines</td></tr>
+  </table></div>
+  <p style="margin-top:12px">Element security is set on the default Cost Center hierarchy only. The Legal Entity rollups are open, so a regional user who reaches them sees group totals. Flagged, not fixed.</p>
+</section>
+
+<p class="foot">Prototype of the HTML output for the TM1 documentation book skill. Model content was read from the live Harborline server through tm1-mcp (read-only) and checked against it on 2026-10-25; the page layout was built by hand. Rule and feeder links come from the rule text, not inference.</p>
+</main>
+</div>
+
+<script>
+const CUBES=[
+ {id:'sales',name:'Sales',dims:'Version · Time · Region · Channel · Product · Sales Measures',inputs:'Units (Actual, Budget)',calc:'Everything else: price, cost, deductions, COGS, margin, Forecast, PY, variances',reads:['price-list','product-cost','fx-rates','assumptions'],feeds:['pl'],loadedBy:'Load.Sales Units'},
+ {id:'price-list',name:'Price List',dims:'Version · Year · Region · Product · Channel · Price List Measures',inputs:'Unit Price in local currency (Actual, Budget)',calc:'Forecast = Actual; variances',reads:[],feeds:[],loadedBy:'Load.Price List'},
+ {id:'product-cost',name:'Product Cost',dims:'Version · Year · Product · Product Cost Measures',inputs:'Standard Cost (USD), Material %',calc:'Forecast = Actual; variances',reads:[],feeds:[],loadedBy:'Load.Product Cost'},
+ {id:'assumptions',name:'Assumptions',dims:'Version · Time · Region · Channel · Assumption Measures',inputs:'Discount %, Return %, Freight %; Forecast Uplift %',calc:'Forecast rates (Actual when closed, else Budget)',reads:[],feeds:[],loadedBy:'Load.Assumptions'},
+ {id:'regional-assumptions',name:'Regional Assumptions',dims:'Version · Time · Region · Regional Assumption Measures',inputs:'Commission %, Benefits %, Bonus %',calc:'Forecast rates',reads:[],feeds:[],loadedBy:'Load.Regional Assumptions'},
+ {id:'headcount',name:'Headcount',dims:'Version · Time · Cost Center · Job Band · Headcount Measures',inputs:'FTE, Annual Salary',calc:'Salary Cost, Benefits, Bonus Accrual, Headcount Share',reads:['regional-assumptions','headcount'],feeds:['pl'],loadedBy:'Load.Headcount'},
+ {id:'fx-rates',name:'FX Rates',dims:'Version · Time · Currency · FX Measures',inputs:'Average Rate, Closing Rate',calc:'Forecast rates',reads:[],feeds:[],loadedBy:'Load.FX Rates'},
+ {id:'pl',name:'P&L',dims:'Version · Time · Cost Center · Account · Reporting Currency',inputs:'GL opex, D&A, interest, tax (Local)',calc:'Revenue and COGS lines, personnel, commission, allocations, USD, Forecast, PY, variances, ratios',reads:['sales','headcount','regional-assumptions','fx-rates','pl'],feeds:[],loadedBy:'Load.GL Actuals · Load.Opex Plan'},
+ {id:'control',name:'Control',dims:'Version · Control Measures',inputs:'Current Month, Forecast Start, Allocations Enabled, Budget Locked',calc:'—',reads:[],feeds:[],loadedBy:'Load.Control'}
+];
+const EDGES=[ // from, to, kind, label
+ ['price-list','sales','rule','Unit Price'],['product-cost','sales','rule','Std Cost, Material %'],['fx-rates','sales','rule','USD cost → local'],['assumptions','sales','rule','rates, uplift'],
+ ['sales','pl','rule','revenue, COGS by country'],['sales','pl','feed','Gross Sales'],
+ ['regional-assumptions','headcount','rule','Benefits %, Bonus %'],['headcount','pl','rule','Salaries, FTE, share'],['headcount','pl','feed','FTE, Salary Cost'],
+ ['regional-assumptions','pl','rule','Commission %'],['fx-rates','pl','rule','Local → USD'],['control','pl','feed','allocation switch']
+];
+const PROCS=[
+ ['Load.All Dimensions','Runs the two Sys loaders for every dimension in order','pCsvRoot','all dimensions'],
+ ['Sys.Load Dimension Structure','Create dimension/hierarchy if missing; insert elements and edges','pDimension, pFile','dimension'],
+ ['Sys.Load Dimension Attributes','Insert attribute if missing; write values','pDimension, pFile','}ElementAttributes'],
+ ['Load.Sales Units','Zero-out slice, load units','pVersion, pFile, pMonth, pZeroOut','Sales'],
+ ['Load.Price List','Annual prices in local currency','pFile','Price List'],
+ ['Load.Product Cost','Annual standard cost and material %','pFile','Product Cost'],
+ ['Load.Assumptions','Channel-level rates, long format','pFile','Assumptions'],
+ ['Load.Regional Assumptions','Region-level rates','pFile','Regional Assumptions'],
+ ['Load.Headcount','FTE and salary','pVersion, pMonth, pFile','Headcount'],
+ ['Load.FX Rates','Average and closing rates','pFile','FX Rates'],
+ ['Load.GL Actuals','Opex actuals in local currency','pMonth, pFile','P&L'],
+ ['Load.Opex Plan','Budget and forecast opex','pVersion, pFile','P&L'],
+ ['Load.Control','Control values','pFile','Control'],
+ ['Sys.Zero Out','ViewZeroOut for one cube, version, month','pCube, pVersion, pMonth','any'],
+ ['Sys.Close Period','Set Status = Closed through month; advance Current Month','pMonth','Time attrs, Control'],
+ ['Sys.Rebuild Feeders','CubeProcessFeeders on every rule cube','—','—'],
+ ['Sys.Save Data','SaveDataAll and timestamp','—','Control'],
+];
+const byId=Object.fromEntries(CUBES.map(c=>[c.id,c]));
+
+// nav
+document.getElementById('nav-cubes').innerHTML=CUBES.map(c=>`<li><a class="cube" href="#cube-${c.id}">${c.name}</a></li>`).join('');
+
+// cube cards
+document.getElementById('cube-cards').innerHTML=CUBES.map(c=>{
+ const feedsInto=EDGES.filter(e=>e[0]===c.id&&e[2]==='feed').map(e=>e[1]);
+ const fedBy=EDGES.filter(e=>e[1]===c.id&&e[2]==='feed').map(e=>e[0]);
+ const readBy=EDGES.filter(e=>e[0]===c.id&&e[2]==='rule'&&e[1]!==c.id).map(e=>e[1]);
+ const link=(id,cls='')=>`<a class="${cls}" href="#cube-${id}">${byId[id].name}</a>`;
+ const list=(ids,cls)=>ids.length?[...new Set(ids)].map(i=>link(i,cls)).join(''):'<em>none</em>';
+ return `<div class="cube" id="cube-${c.id}">
+  <div class="head"><h3>${c.name}</h3><span class="tag">${c.dims}</span></div>
+  <div class="grid">
+   <div><span>Stored</span>${c.inputs}</div>
+   <div><span>Calculated</span>${c.calc}</div>
+   <div><span>Reads from</span><div class="io">${list(c.reads.filter(r=>r!==c.id))}</div></div>
+   <div><span>Read by</span><div class="io">${list(readBy)}</div></div>
+   <div><span>Feeds</span><div class="io">${list(feedsInto,'feed')}</div></div>
+   <div><span>Fed by</span><div class="io">${list(fedBy,'feed')}</div></div>
+   <div><span>Loaded by</span><code>${c.loadedBy}</code></div>
+  </div></div>`;}).join('');
+
+// processes
+document.getElementById('proc-table').insertAdjacentHTML('beforeend',PROCS.map(p=>`<tr><td class="mono">${p[0]}</td><td>${p[1]}</td><td class="mono">${p[2]}</td><td class="mono">${p[3]}</td></tr>`).join('')+`<tr><td class="mono" colspan="4" style="color:var(--muted)">+ 16 more: 8 security processes (Sec.*) and 8 demo-setup and admin processes, same conventions, not listed here</td></tr>`);
+
+// map
+const POS={ 'price-list':[40,30],'product-cost':[40,110],'assumptions':[40,190],'fx-rates':[40,300],
+ 'sales':[300,110],'regional-assumptions':[300,300],'headcount':[300,390],'control':[300,480],
+ 'pl':[600,230]};
+const W=170,H=46;
+const cx=id=>POS[id][0]+W/2, cy=id=>POS[id][1]+H/2;
+function edgePath(a,b,offset){
+ const x1=POS[a][0]+W, y1=cy(a)+offset, x2=POS[b][0], y2=cy(b)+offset;
+ const dx=Math.max(40,(x2-x1)/2);
+ return `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`;
+}
+let svg=`<svg viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cube data flow map">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+<text x="40" y="18" class="lbl">DRIVERS</text><text x="300" y="98" class="lbl">OPERATIONAL</text><text x="600" y="218" class="lbl">REPORTING</text>`;
+EDGES.forEach((e,i)=>{
+ const same=EDGES.filter(x=>x[0]===e[0]&&x[1]===e[1]);
+ const off=same.length>1?(same.indexOf(e)===0?-7:7):0;
+ svg+=`<path class="edge ${e[2]}" data-from="${e[0]}" data-to="${e[1]}" d="${edgePath(e[0],e[1],off)}" marker-end="url(#ar)" style="color:${e[2]==='feed'?'var(--teal)':'var(--accent)'}"><title>${byId[e[0]].name} → ${byId[e[1]].name}: ${e[3]}</title></path>`;
+});
+CUBES.forEach(c=>{const [x,y]=POS[c.id];
+ svg+=`<g class="node" data-id="${c.id}" tabindex="0" role="link" aria-label="Go to ${c.name}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="4"/><text x="${x+10}" y="${y+19}" font-weight="500">${c.name}</text><text class="dims" x="${x+10}" y="${y+35}">${c.dims.split(' · ').length} dims · ${c.loadedBy.split(' · ')[0]}</text></g>`;});
+svg+=`</svg>`;
+document.getElementById('svgwrap').innerHTML=svg;
+const hint=document.getElementById('hint'), baseHint=hint.textContent;
+const nodes=[...document.querySelectorAll('.map .node')], edges=[...document.querySelectorAll('.map .edge')];
+function focus(id){
+ const linked=new Set([id]);
+ edges.forEach(el=>{const hot=el.dataset.from===id||el.dataset.to===id;el.classList.toggle('hot',hot);el.classList.toggle('dim',!hot);if(hot){linked.add(el.dataset.from);linked.add(el.dataset.to);}});
+ nodes.forEach(n=>{n.classList.toggle('hot',n.dataset.id===id);n.classList.toggle('dim',!linked.has(n.dataset.id));});
+ const c=byId[id], ins=EDGES.filter(e=>e[1]===id&&e[0]!==id), outs=EDGES.filter(e=>e[0]===id&&e[1]!==id);
+ hint.innerHTML=`<b>${c.name}</b> — reads ${ins.filter(e=>e[2]==='rule').length} cube${ins.filter(e=>e[2]==='rule').length===1?'':'s'}, feeds ${outs.filter(e=>e[2]==='feed').length}. ${ins.map(e=>`${byId[e[0]].name}: ${e[3]}`).join(' · ')||''}`;
+}
+function clear(){edges.forEach(el=>el.classList.remove('hot','dim'));nodes.forEach(n=>n.classList.remove('hot','dim'));hint.textContent=baseHint;}
+nodes.forEach(n=>{
+ n.addEventListener('mouseenter',()=>focus(n.dataset.id));n.addEventListener('focus',()=>focus(n.dataset.id));
+ n.addEventListener('mouseleave',clear);n.addEventListener('blur',clear);
+ const go=()=>{location.hash='cube-'+n.dataset.id;document.getElementById('cube-'+n.dataset.id).scrollIntoView({behavior:'smooth',block:'start'});};
+ n.addEventListener('click',go);n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+});
+
+// search: filter nav + highlight first match
+const q=document.getElementById('q');
+q&&q.addEventListener('input',()=>{const v=q.value.trim().toLowerCase();document.querySelectorAll('nav li').forEach(li=>{li.hidden=!!v&&!li.textContent.toLowerCase().includes(v);});});
+</script>
+
+</body></html>

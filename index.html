@@ -150,7 +150,7 @@ summary{cursor:pointer;font-weight:500;color:var(--accent)}
 
 <section id="map">
   <h2>Model map</h2>
-  <p class="lede">Cube-to-cube data flow, read from the rule and feeder text. Solid arrows are <code>DB()</code> lookups, dashed arrows are feeders, orange arrows are TI loads. Click a cube to jump to it.</p>
+  <p class="lede">Cube-to-cube data flow, read from the rule and feeder text. Solid arrows are <code>DB()</code> lookups, dashed arrows are feeders, orange arrows are the TI processes that load each cube. Click a cube to jump to it.</p>
   <div class="map">
     <div class="bar"><span class="key"><i></i>rule lookup</span><span class="key"><i class="feed"></i>feeder</span><span class="key"><i class="load"></i>process load</span><span>Hover a cube to isolate its links.</span></div>
     <div id="svgwrap"></div>
@@ -333,26 +333,28 @@ document.getElementById('cube-cards').innerHTML=CUBES.map(c=>{
 document.getElementById('proc-table').insertAdjacentHTML('beforeend',PROCS.map(p=>`<tr><td class="mono">${p[0]}</td><td>${p[1]}</td><td class="mono">${p[2]}</td><td class="mono">${p[3]}</td></tr>`).join('')+`<tr><td class="mono" colspan="4" style="color:var(--muted)">+ 16 more: 8 security processes (Sec.*) and 8 demo-setup and admin processes, same conventions, not listed here</td></tr>`);
 
 // map
-const POS={ 'price-list':[40,30],'product-cost':[40,110],'assumptions':[40,190],'fx-rates':[40,300],
- 'sales':[300,110],'regional-assumptions':[300,300],'headcount':[300,390],'control':[300,480],
- 'pl':[600,230]};
+const POS={ 'price-list':[40,60],'product-cost':[40,150],'assumptions':[40,240],'fx-rates':[40,350],
+ 'sales':[300,150],'regional-assumptions':[300,350],'headcount':[300,440],'control':[300,530],
+ 'pl':[600,280]};
 const W=170,H=46;
 const cx=id=>POS[id][0]+W/2, cy=id=>POS[id][1]+H/2;
 function edgePath(a,b,offset){
+ if(POS[a][0]===POS[b][0]){const x=POS[a][0], y1=cy(a)+offset, y2=cy(b)+offset; return `M${x},${y1} C${x-70},${y1} ${x-70},${y2} ${x},${y2}`;}
  const x1=POS[a][0]+W, y1=cy(a)+offset, x2=POS[b][0], y2=cy(b)+offset;
  const dx=Math.max(40,(x2-x1)/2);
  return `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`;
 }
-let svg=`<svg viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cube data flow map">
+let svg=`<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cube data flow map">
 <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
-<text x="40" y="18" class="lbl">DRIVERS</text><text x="300" y="98" class="lbl">OPERATIONAL</text><text x="600" y="218" class="lbl">REPORTING</text>`;
+<text x="40" y="14" class="lbl">DRIVERS</text><text x="300" y="104" class="lbl">OPERATIONAL</text><text x="600" y="234" class="lbl">REPORTING</text>`;
 EDGES.forEach((e,i)=>{
  const same=EDGES.filter(x=>x[0]===e[0]&&x[1]===e[1]);
  const off=same.length>1?(same.indexOf(e)===0?-7:7):0;
  svg+=`<path class="edge ${e[2]}" data-from="${e[0]}" data-to="${e[1]}" d="${edgePath(e[0],e[1],off)}" marker-end="url(#ar)" style="color:${e[2]==='feed'?'var(--teal)':'var(--accent)'}"><title>${byId[e[0]].name} → ${byId[e[1]].name}: ${e[3]}</title></path>`;
 });
-CUBES.forEach(c=>{const [x,y]=POS[c.id];
- svg+=`<g class="node" data-id="${c.id}" tabindex="0" role="link" aria-label="Go to ${c.name}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="4"/><text x="${x+10}" y="${y+19}" font-weight="500">${c.name}</text><text class="dims" x="${x+10}" y="${y+35}">${c.dims.split(' · ').length} dims · ${c.loadedBy.split(' · ')[0]}</text></g>`;});
+CUBES.forEach(c=>{const [x,y]=POS[c.id];const mx=x+W/2;
+ svg+=`<path class="edge load" data-from="proc" data-to="${c.id}" d="M${mx},${y-24} L${mx},${y-1}" marker-end="url(#ar)" style="color:var(--amber)"><title>${c.loadedBy} → ${c.name}</title></path><text class="lbl" x="${mx}" y="${y-28}" text-anchor="middle">${c.loadedBy.replace(' · ',', ')}</text>`;
+ svg+=`<g class="node" data-id="${c.id}" tabindex="0" role="link" aria-label="Go to ${c.name}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="4"/><text x="${x+10}" y="${y+19}" font-weight="500">${c.name}</text><text class="dims" x="${x+10}" y="${y+35}">${c.dims.split(' · ').length} dims</text></g>`;});
 svg+=`</svg>`;
 document.getElementById('svgwrap').innerHTML=svg;
 const hint=document.getElementById('hint'), baseHint=hint.textContent;
